@@ -15,7 +15,14 @@ html = response.text
 tablas =pd.read_html(StringIO(html))
 df = tablas[0]
 
+df.columns = [col.strip() for col in df.columns]
+df.rename(columns={"Streams (billions)": "Streams"}, inplace=True)
+df['Streams'] = df['Streams'].astype(str)
+df = df[df['Streams'].str.contains(r'^\d+\.?\d*$', na=False)]
+df['Streams'] = df['Streams'].astype(float)
+df.dropna(subset=["Song", "Artist(s)", "Streams", "Release date"], inplace=True)
+
 print(df.head())
 
-df = df.dropnas(subset=["Song", "Artist"]) ?????????????????????????
+#df = df.dropnas(subset=["Song", "Artist"]) ?????????????????????????
 
